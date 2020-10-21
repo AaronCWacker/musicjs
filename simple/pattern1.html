@@ -131,7 +131,7 @@ const midi_pitch_to_abc = (pitch) => {
 }
 
 const root_note_to_bar = (root,major) => {
-  const pattern = [0,7,12,12+major?4:3,12,7]
+  const pattern = [0,7,12,12+(major?4:3),12,7]
   const pitches = pattern.map(x => x + root)
   const notes = pitches.map(midi_pitch_to_abc)
   // do each pattern twice, for a total of 12 notes, grouped in 6's
