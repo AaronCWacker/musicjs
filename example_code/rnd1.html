@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="jsrand.min.js"></script>
+  <script>
+    const rng = new Srand(0)
+    const run1 = Array.from(Array(10).keys()).map(_ => rng.intInRange(0,11))
+    console.log({run1})
+    rng.seed(0)
+    const run2 = Array.from(Array(10).keys()).map(_ => rng.intInRange(0,11))
+    console.log({run2})
+    rng.seed(1)
+    const run3 = Array.from(Array(50).keys()).map(_ => rng.intInRange(0,11))
+    console.log({run3})
+  </script>
+</head>
+<body>
+  
+</body>
+</html>
