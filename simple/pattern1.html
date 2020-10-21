@@ -188,6 +188,7 @@ window.addEventListener("load", _ => {
   seed_input.addEventListener("change", handle_change_seed)
   window.addEventListener("keydown", handle_keydown)
   new_seed(seed)
+  document.getElementById("seed").focus()
 })
 
 const handle_keydown = e => {
@@ -209,6 +210,30 @@ const handle_keydown = e => {
       e.preventDefault()
       use_sharp = !use_sharp
       gen()
+      break
+    case "z":
+      new_seed(0)
+      e.preventDefault()
+      break
+    case "x":
+      new_seed(seed-10)
+      e.preventDefault()
+      break
+    case "c":
+      new_seed(seed+10)
+      e.preventDefault()
+      break
+    case "v":
+      new_seed(seed-100)
+      e.preventDefault()
+      break
+    case "b":
+      new_seed(seed+100)
+      e.preventDefault()
+      break
+    case "i":
+      document.getElementById("seed").focus()
+      e.preventDefault()
       break
   }
 }
