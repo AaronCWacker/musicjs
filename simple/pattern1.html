@@ -12,7 +12,7 @@ const rng = new Srand()
 
 const seed_offset = 2708771;
 const new_seed = n => {
-  seed = n + seed_offset
+  seed = n
   console.log(`New seed: ${n}`)
   document.getElementById("current_seed").textContent = seed
   document.getElementById("seed").value = seed
@@ -174,7 +174,7 @@ const createAbc = config => {
 }
 
 const gen = _ => {
-  rng.seed(seed)
+  rng.seed(seed + seed_offset)
   rng.random()
   const app = document.getElementById("app")
   const abc = createAbc(config)
