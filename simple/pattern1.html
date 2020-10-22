@@ -10,8 +10,9 @@
 let seed = 0
 const rng = new Srand()
 
+const seed_offset = 2708771;
 const new_seed = n => {
-  seed = n
+  seed = n + seed_offset
   console.log(`New seed: ${n}`)
   document.getElementById("current_seed").textContent = seed
   document.getElementById("seed").value = seed
@@ -183,6 +184,7 @@ const gen = _ => {
 
 window.addEventListener("load", _ => {
   console.log("Start")
+  setup_button_handlers()
   const seed_input = document.getElementById("seed")
   const current_seed_span = document.getElementById("current_seed")
   seed_input.addEventListener("change", handle_change_seed)
@@ -203,8 +205,7 @@ const handle_keydown = e => {
       e.preventDefault()
       break
     case " ":
-      new_seed(Math.floor(Math.random()*1000000))
-      e.preventDefault()
+      seed_random()
       break
     case "s":
       e.preventDefault()
@@ -216,20 +217,25 @@ const handle_keydown = e => {
       e.preventDefault()
       break
     case "x":
-      new_seed(seed-10)
-      e.preventDefault()
+      seed_minus_100(e)
       break
     case "c":
-      new_seed(seed+10)
-      e.preventDefault()
+      seed_minus_10(e)
       break
     case "v":
-      new_seed(seed-100)
-      e.preventDefault()
+      seed_minus_1(e)
       break
     case "b":
-      new_seed(seed+100)
-      e.preventDefault()
+      seed_plus_1(e)
+      break
+    case "n":
+      seed_plus_10(e)
+      break
+    case "m":
+      seed_plus_100(e)
+      break
+    case "a":
+      seed_daily(e)
       break
     case "i":
       document.getElementById("seed").focus()
@@ -237,14 +243,72 @@ const handle_keydown = e => {
       break
   }
 }
+
+const seed_minus_100 = (e) => { e.preventDefault(); new_seed(seed-100); }
+const seed_minus_10 = (e) => { e.preventDefault(); new_seed(seed-10); }
+const seed_minus_1 = (e) => { e.preventDefault(); new_seed(seed-1); }
+const seed_plus_1 = (e) => { e.preventDefault(); new_seed(seed+1); }
+const seed_plus_10 = (e) => { e.preventDefault(); new_seed(seed+10); }
+const seed_plus_100 = (e) => { e.preventDefault(); new_seed(seed+100); }
+const seed_daily = (e) => { 
+  e.preventDefault(); 
+  const now = Date.now()
+  const epoch = Date.parse('1 Jan 2020')
+  const days = Math.floor((now - epoch)/(1000*24*3600))
+  new_seed(days*100); 
+}
+const seed_random_range = 10**7
+const seed_random = (e) => { e.preventDefault(); new_seed(Math.floor(Math.random()*seed_random_range)); }
+const setup_button_handlers = () => { 
+  document.getElementById("s_m100").addEventListener("click",seed_minus_100)
+  document.getElementById("s_m10").addEventListener("click",seed_minus_10)
+  document.getElementById("s_m1").addEventListener("click",seed_minus_1)
+  document.getElementById("s_p1").addEventListener("click",seed_plus_1)
+  document.getElementById("s_p10").addEventListener("click",seed_plus_10)
+  document.getElementById("s_p100").addEventListener("click",seed_plus_100)
+  document.getElementById("s_daily").addEventListener("click",seed_daily)
+  document.getElementById("s_random").addEventListener("click",seed_random)
+}
+// daily is 100 per day
+// 100*(timestamp.now-timestamp(1/1/2020)/1000/86400)
+
 // 1 toggle use sharp
 // left/right increment/decrement seed
 // space randomise seed
   </script>
+  <style>
+    div.button {
+      display: inline-block;
+      padding: 0.5em;
+      margin: 0.5em;
+      border: 1px solid black;
+    }
+    div.minus {
+      background-color: #fcc;
+    }
+    div.plus {
+      background-color: #cfc;
+    }
+    div.daily {
+      background-color: #ccf;
+    }
+    div.random {
+      background-color: #ccc;
+    }
+  </style>
 </head>
 <body>
   <div id='controls'>
-    Seed: <input type='number' value=0 id='seed'/> (current seed = <span id='current_seed'></span>)
+    Seed: <input type='number' value=0 id='seed'/> 
+    (current seed = <span id='current_seed'></span>)
+    <div class='button minus' id='s_m100'>-100</div>
+    <div class='button minus' id='s_m10'>-10</div>
+    <div class='button minus' id='s_m1'>-1</div>
+    <div class='button plus' id='s_p1'>+1</div>
+    <div class='button plus' id='s_p10'>+10</div>
+    <div class='button plus' id='s_p100'>+100</div>
+    <div class='button daily' id='s_daily'>Daily</div>
+    <div class='button random' id='s_random'>Random</div>
   </div>
   <div id='paper'>
 
