@@ -1,5 +1,6 @@
 class Note {
   constructor(midi_pitch=60) {
+    // console.log("constructor Note",midi_pitch)
     this.from_midi(midi_pitch)
   }
   from_midi(midi_pitch) {
@@ -63,6 +64,7 @@ class Note {
     // if not in white_keys_midi, if use_sharp
     // then subtract 1, lookup and append sharp
     // else add 1, lookup and append flat
+    // console.log({pitch_class})
     if( pitch_class in white_keys_lookup ) {
       abc_pitch = white_keys_lookup[pitch_class]
       accidental = ""
@@ -75,6 +77,7 @@ class Note {
         accidental = "_"
       }
     }
+    // console.log({abc_pitch})
     if( octave <= 5 ) {
       const octave_shift = 5 - octave
       octave_mod = ",".repeat(octave_shift)

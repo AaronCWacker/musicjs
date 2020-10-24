@@ -35,7 +35,47 @@ class Conv {
 
 const go = () => {
   const gen = new AdjacentChordGenerator(rng)
-  const cb = () => { gen.test(10) }
+
+  const cb = () => {
+    gen.reset() 
+    const arr = gen.generate(32) 
+    console.log({arr})
+    const octave = 60
+    const use_sharps = ui.use_sharps
+    /*
+    const arr_abc = arr.map(chord => chord.notes_in_octave(octave))
+    console.log({arr_abc})
+    const arr_abc2 = arr_abc.map(midi_notes => midi_notes.map(midi_note => new Note(midi_note)))
+    console.log({arr_abc2})
+    const arr_abc3 = arr_abc2.map(notes => notes.map(note => note.to_abc_pitch(use_sharps)))
+    console.log({arr_abc3})
+    */
+    const arr_abc = arr.map(chord => chord.notes_in_octave(octave))
+      .map(midi_notes => midi_notes.map(midi_note => new Note(midi_note)))
+      .map(notes => notes.map(note => note.to_abc_pitch(use_sharps)))
+    console.log({arr_abc})
+    let abc = "M:4/4\nL:1/1\n[| "
+    const chords_per_line = 8
+    const break_every = chords_per_line
+    for(let i=0; i<arr_abc.length; i++) {
+      let ys = arr_abc[i]
+      abc += "["
+      for(let j=0; j<ys.length; j++) {
+        abc += ys[j]
+      }
+      abc += "]"
+      if( i+1 < arr_abc.length ) {
+        abc += " | "
+        if( (i%break_every) == (break_every-1)) {
+          abc += "\n"
+        }
+      } else {
+        abc += " |]"
+      }
+    }
+    const paper = document.getElementById("paper")
+    ABCJS.renderAbc(paper,abc,{responsive:"resize"})
+  }
   ui.add_callback(cb)
   cb()
 }
