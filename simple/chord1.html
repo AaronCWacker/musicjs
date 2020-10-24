@@ -58,6 +58,54 @@ class Conv {
   }
 }
 
+class AdjacentChordGenerator {
+  constructor(rng) {
+    this.rng = rng
+    const indices = this.range(12)
+    const major_chord_notes = [0,4,7]
+    const minor_chord_notes = [0,3,7]
+    const major_chords = indices.map(root => new Chord(root,major_chord_notes,"major"))
+    const minor_chords = indices.map(root => new Chord(root,minor_chord_notes,"minor"))
+    const chords_containing_note = indices.map(_ => Array())
+    major_chords.forEach(chord => {
+      chord.abs_notes.forEach(note => {
+        chords_containing_note[note].push(chord)
+      })
+    })
+    minor_chords.forEach(chord => {
+      chord.abs_notes.forEach(note => {
+        chords_containing_note[note].push(chord)
+      })
+    })
+    this.chords_containing_note = chords_containing_note
+    const candidates = this.rng.rand_choice(chords_containing_note)
+    this.current_chord = this.rng.rand_choice(candidates) 
+  }
+  next() {
+    const new_pivot = this.rng.rand_choice(this.current_chord.abs_notes)
+    const candidates = this.chords_containing_note[new_pivot].filter(
+      chord => !this.current_chord.same_notes_as(chord)
+    )
+    console.log(candidates.length)
+    const new_chord = this.rng.rand_choice(candidates)
+    new_chord.print()
+    this.current_chord = new_chord
+    return new_chord
+  }
+  range(n) {
+    return Array.from(Array(n).keys())
+  }
+  test(n) {
+    for(let i=0; i<n; i++) {
+      console.log(this.next())
+    }
+  }
+}
+const go = () => {
+  const gen = new AdjacentChordGenerator(rng)
+  gen.test(10)
+}
+/*
 const go = () => {
   const conv = new Conv()
   const indices = conv.range(12)
@@ -98,8 +146,8 @@ const go = () => {
     new_chord.print()
     current_chord = new_chord
   }
-
 }  
+*/
 </script>
 </head>
 <body>
