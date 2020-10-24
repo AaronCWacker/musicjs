@@ -45,6 +45,13 @@ class RngControls {
     const key = e.key
     // console.log(key)
     if( key in this.key_dict ) {
+      if( this.seed_input !== document.activeElement ) {
+        e.preventDefault()
+      } else if( key.match(/\d/) ) {
+        return
+      } else {
+        e.preventDefault()
+      }
       this.key_dict[key](e)
     }
   }
