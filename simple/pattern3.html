@@ -176,7 +176,15 @@ const createAbc = config => {
   console.log({all_notes,all_roots})
   const possible_roots = all_roots.filter(x => x >= min_root && x <= max_root)
   const indices = range(number_of_bars)
-  const random_roots = indices.map(_ => random_choice(possible_roots))
+  const random_roots = []
+  let last_root = -1
+  for(let i=0; i<number_of_bars; i++) {
+    do {
+      new_root = random_choice(possible_roots)
+    } while( new_root == last_root )
+    last_root = new_root
+    random_roots.push(new_root)
+  }
   const random_root_indices = random_roots.map(x => all_notes.indexOf(x))
   const bars_notes = random_root_indices.map(root_index => root_note_to_bar(root_index,all_notes))
   const lines = []
@@ -220,7 +228,8 @@ window.addEventListener("load", _ => {
   const current_seed_span = document.getElementById("current_seed")
   seed_input.addEventListener("change", handle_change_seed)
   window.addEventListener("keydown", handle_keydown)
-  new_seed(seed)
+  // new_seed(seed)
+  seed_daily()
   document.getElementById("seed").focus()
 })
 
@@ -275,21 +284,23 @@ const handle_keydown = e => {
   }
 }
 
-const seed_minus_100 = (e) => { e.preventDefault(); new_seed(seed-100); }
-const seed_minus_10 = (e) => { e.preventDefault(); new_seed(seed-10); }
-const seed_minus_1 = (e) => { e.preventDefault(); new_seed(seed-1); }
-const seed_plus_1 = (e) => { e.preventDefault(); new_seed(seed+1); }
-const seed_plus_10 = (e) => { e.preventDefault(); new_seed(seed+10); }
-const seed_plus_100 = (e) => { e.preventDefault(); new_seed(seed+100); }
+const pd = (e) => { if(e) e.preventDefault() }
+const seed_minus_100 = (e) => { pd(e); new_seed(seed-100); }
+const seed_minus_10 = (e) => { pd(e); new_seed(seed-10); }
+const seed_minus_1 = (e) => { pd(e); new_seed(seed-1); }
+const seed_plus_1 = (e) => { pd(e); new_seed(seed+1); }
+const seed_plus_10 = (e) => { pd(e); new_seed(seed+10); }
+const seed_plus_100 = (e) => { pd(e); new_seed(seed+100); }
 const seed_daily = (e) => { 
-  e.preventDefault(); 
+  pd(e) 
   const now = Date.now()
   const epoch = Date.parse('1 Jan 2020')
   const days = Math.floor((now - epoch)/(1000*24*3600))
   new_seed(days*100); 
 }
 const seed_random_range = 10**7
-const seed_random = (e) => { e.preventDefault(); new_seed(Math.floor(Math.random()*seed_random_range)); }
+const seed_random = (e) => { pd(e); new_seed(Math.floor(Math.random()*seed_random_range)); }
+const seed_zero = (e) => { pd(e); new_seed(0); }
 const setup_button_handlers = () => { 
   document.getElementById("s_m100").addEventListener("click",seed_minus_100)
   document.getElementById("s_m10").addEventListener("click",seed_minus_10)
@@ -299,6 +310,7 @@ const setup_button_handlers = () => {
   document.getElementById("s_p100").addEventListener("click",seed_plus_100)
   document.getElementById("s_daily").addEventListener("click",seed_daily)
   document.getElementById("s_random").addEventListener("click",seed_random)
+  document.getElementById("s_zero").addEventListener("click",seed_zero)
 }
 // daily is 100 per day
 // 100*(timestamp.now-timestamp(1/1/2020)/1000/86400)
@@ -324,7 +336,7 @@ const setup_button_handlers = () => {
     div.daily {
       background-color: #ccf;
     }
-    div.random {
+    div.random, div.zero {
       background-color: #ccc;
     }
   </style>
@@ -339,6 +351,7 @@ const setup_button_handlers = () => {
     <div class='button plus' id='s_p100'>+100</div>
     <div class='button daily' id='s_daily'>Daily</div>
     <div class='button random' id='s_random'>Random</div>
+    <div class='button zero' id='s_zero'>Zero</div><br/>
     Seed: <input type='number' value=0 id='seed'/> 
     (current seed = <span id='current_seed'></span>)
   </div>
