@@ -12,7 +12,7 @@
   <script src="chord.js"></script>
   <script src="note.js"></script>
   <script src="adjacent_chord_generator.js"></script>
-  <script src="chords1.js"></script>
+  <script src="block_chord_abc_generator.js"></script>
   <link rel="stylesheet" href="rng-ui.css">
   <script>
 let rng, ui, paper, generator
@@ -21,107 +21,10 @@ window.addEventListener("load",() => {
   rng = new Rng()
   ui = new RngControls(rng,"ui")
   paper = document.getElementById("paper")
-  // generator = new MyGenerator(rng,ui,paper) // generator adds its generate() callback -- later
+  generator = new BlockChordGenerator(rng,ui,paper)
   ui.daily()
-  go()
-})    
-  
-// aim is to reproduce the original cs
-class Conv {
-  range(n) {
-    return Array.from(Array(n).keys())
-  }
-}
-
-const go = () => {
-  const gen = new AdjacentChordGenerator(rng)
-
-  const cb = () => {
-    gen.reset() 
-    const arr = gen.generate(32) 
-    console.log({arr})
-    const octave = 60
-    const use_sharps = ui.use_sharps
-    /*
-    const arr_abc = arr.map(chord => chord.notes_in_octave(octave))
-    console.log({arr_abc})
-    const arr_abc2 = arr_abc.map(midi_notes => midi_notes.map(midi_note => new Note(midi_note)))
-    console.log({arr_abc2})
-    const arr_abc3 = arr_abc2.map(notes => notes.map(note => note.to_abc_pitch(use_sharps)))
-    console.log({arr_abc3})
-    */
-    const arr_abc = arr.map(chord => chord.notes_in_octave(octave))
-      .map(midi_notes => midi_notes.map(midi_note => new Note(midi_note)))
-      .map(notes => notes.map(note => note.to_abc_pitch(use_sharps)))
-    console.log({arr_abc})
-    let abc = "M:4/4\nL:1/1\n[| "
-    const chords_per_line = 8
-    const break_every = chords_per_line
-    for(let i=0; i<arr_abc.length; i++) {
-      let ys = arr_abc[i]
-      abc += "["
-      for(let j=0; j<ys.length; j++) {
-        abc += ys[j]
-      }
-      abc += "]"
-      if( i+1 < arr_abc.length ) {
-        abc += " | "
-        if( (i%break_every) == (break_every-1)) {
-          abc += "\n"
-        }
-      } else {
-        abc += " |]"
-      }
-    }
-    const paper = document.getElementById("paper")
-    ABCJS.renderAbc(paper,abc,{responsive:"resize"})
-  }
-  ui.add_callback(cb)
-  cb()
-}
-/*
-const go = () => {
-  const conv = new Conv()
-  const indices = conv.range(12)
-  const major_chord_notes = [0,4,7]
-  const minor_chord_notes = [0,3,7]
-  const major_chords = indices.map(root => new Chord(root,major_chord_notes,"major"))
-  const minor_chords = indices.map(root => new Chord(root,minor_chord_notes,"minor"))
-  // for each index, we want a list of chords containing that note
-  const chords_containing_note = indices.map(_ => Array())
-  major_chords.forEach(chord => {
-    chord.abs_notes.forEach(note => {
-      chords_containing_note[note].push(chord)
-    })
-  })
-  minor_chords.forEach(chord => {
-    chord.abs_notes.forEach(note => {
-      chords_containing_note[note].push(chord)
-    })
-  })
-
-  // choose first chord
-  const starting_index = rng.rand_choice(indices)
-  const first_chord_index = rng.rand_range(6)
-  let current_chord = chords_containing_note[starting_index][first_chord_index]
-  console.log({starting_index,first_chord_index,current_chord})
-
-  let new_pivot, new_chord
-
-  const cb = (chord) => {
-    console.log({chord})
-  }
-
-  for(let i=0; i<10; i++) {
-    new_pivot = rng.rand_choice(current_chord.abs_notes)
-    const candidates = chords_containing_note[new_pivot].filter(x => !current_chord.same_notes_as(x))
-    //console.log(candidates.length)
-    new_chord = rng.rand_choice(candidates)
-    new_chord.print()
-    current_chord = new_chord
-  }
-}  
-*/
+  generator.generate()
+})
 </script>
 </head>
 <body>

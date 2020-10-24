@@ -18,32 +18,46 @@ class RngControls {
     this.create_ui()
     this.map_keys()
     this.update_seed()
-    this.seed_input.focus()
+    this.seed_input.blur()
   }
   map_keys() {        
     this.key_dict = {
       "s": () => { this.toggle_use_sharps() },
-      "a": () => { console.log("hello") },
-      "i": () => { this.seed_input.focus() }
+      "a": () => { this.daily() },
+      "i": () => { this.seed_input.focus() },
+      "I": () => { this.seed_input.blur() },
+      "z": () => { this.zero() },
+      "x": () => { this.add(-100) },
+      "c": () => { this.add(-10) },
+      "v": () => { this.add(-1) },
+      "b": () => { this.add(1) },
+      "n": () => { this.add(10) },
+      "m": () => { this.add(100) },
+      " ": () => { this.add(1) },
+      "r": () => { this.random() }
     }
     window.addEventListener("keypress",this.key_handler)
   }
+  set_key_handler(key,handler) {
+    this.key_dict[key] = handler
+  }
   key_handler = (e) => {
     const key = e.key
+    // console.log(key)
     if( key in this.key_dict ) {
       this.key_dict[key](e)
     }
   }
   add_callback(cb) {
-    console.log("add callback")
+    // console.log("add callback")
     this.callbacks.push(cb)
   }
   signal_callbacks() {
-    console.log("signal callbacks",this.callbacks)
+    // console.log("signal callbacks",this.callbacks)
     this.callbacks.forEach(cb => cb(this))
   }
   create_ui() {
-    console.log("create ui")
+    // console.log("create ui")
     const target = this.target
     const crdiv = (id,content,classes=[],cb) => {
       let div

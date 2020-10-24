@@ -1,11 +1,10 @@
 class AbcGenerator {
   constructor(rng,ui,paper) {
-    console.log("abc constructor")
+    // console.log("abc constructor")
     this.rng = rng
     this.ui = ui
     this.paper = paper
     this.ui.add_callback(this.generate)
-    this.generate()
   }
   generate = () => {
     // leave this method alone in subclasses
