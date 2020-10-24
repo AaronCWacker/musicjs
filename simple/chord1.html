@@ -9,6 +9,9 @@
   <script src="rng.js"></script>
   <script src="rng-ui.js"></script>
   <script src="abc-gen.js"></script>  
+  <script src="chord.js"></script>
+  <script src="note.js"></script>
+  <script src="adjacent_chord_generator.js"></script>
   <script src="chords1.js"></script>
   <link rel="stylesheet" href="rng-ui.css">
   <script>
@@ -23,34 +26,6 @@ window.addEventListener("load",() => {
   go()
 })    
   
-class Chord {
-  constructor(root,rel_notes,comment=undefined) {
-    this.root = root
-    this.rel_notes = rel_notes
-    this.comment=comment
-    this.abs_notes = this.rel_notes.map((note) => ((note+this.root)%12))
-    this.abs_notes.sort((x,y) => x-y)
-    this.rel_notes.sort((x,y) => x-y)
-    this.note_names = "C C# D D# E F F# G G# A A# B".split(" ")
-  }
-  print() {
-    console.log(`${this.note_names[this.root]} ${this.comment}`)
-  }
-  same_notes_as(chord) {
-    // compare this.abs_notes
-    if( this.abs_notes.length != chord.abs_notes.length ) return false
-    for(let i=0; i<this.abs_notes.length; i++) {
-      if( this.abs_notes[i] != chord.abs_notes[i] ) return false
-    }
-    return true
-  }
-  equals(chord) {
-    return this.same_notes_as(chord) && this.root == chord.root
-  }
-  offset(rel) {
-    const chord = new Chord((this.root+rel)%12,this.rel_notes)
-  }
-}
 // aim is to reproduce the original cs
 class Conv {
   range(n) {
@@ -58,52 +33,11 @@ class Conv {
   }
 }
 
-class AdjacentChordGenerator {
-  constructor(rng) {
-    this.rng = rng
-    const indices = this.range(12)
-    const major_chord_notes = [0,4,7]
-    const minor_chord_notes = [0,3,7]
-    const major_chords = indices.map(root => new Chord(root,major_chord_notes,"major"))
-    const minor_chords = indices.map(root => new Chord(root,minor_chord_notes,"minor"))
-    const chords_containing_note = indices.map(_ => Array())
-    major_chords.forEach(chord => {
-      chord.abs_notes.forEach(note => {
-        chords_containing_note[note].push(chord)
-      })
-    })
-    minor_chords.forEach(chord => {
-      chord.abs_notes.forEach(note => {
-        chords_containing_note[note].push(chord)
-      })
-    })
-    this.chords_containing_note = chords_containing_note
-    const candidates = this.rng.rand_choice(chords_containing_note)
-    this.current_chord = this.rng.rand_choice(candidates) 
-  }
-  next() {
-    const new_pivot = this.rng.rand_choice(this.current_chord.abs_notes)
-    const candidates = this.chords_containing_note[new_pivot].filter(
-      chord => !this.current_chord.same_notes_as(chord)
-    )
-    console.log(candidates.length)
-    const new_chord = this.rng.rand_choice(candidates)
-    new_chord.print()
-    this.current_chord = new_chord
-    return new_chord
-  }
-  range(n) {
-    return Array.from(Array(n).keys())
-  }
-  test(n) {
-    for(let i=0; i<n; i++) {
-      console.log(this.next())
-    }
-  }
-}
 const go = () => {
   const gen = new AdjacentChordGenerator(rng)
-  gen.test(10)
+  const cb = () => { gen.test(10) }
+  ui.add_callback(cb)
+  cb()
 }
 /*
 const go = () => {

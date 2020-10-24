@@ -9,6 +9,7 @@ class AbcGenerator {
   }
   generate = () => {
     // leave this method alone in subclasses
+    this.rng.reset()
     const abc = this.generate_abc()
     ABCJS.renderAbc(this.paper,abc,{responsive:"resize"})
   }
