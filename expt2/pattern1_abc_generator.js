@@ -68,9 +68,9 @@ class Pattern1AbcGenerator extends AbcGenerator {
     const lines = []
     let line = []
     const header = `X:1
-    M:${this.config.time_signature}
-    L:${this.config.default_note_duration}
-    K:clef=${this.config.clef}`
+M: ${this.config.time_signature}
+L: ${this.config.default_note_duration}
+K: clef=${this.config.clef}`
 
     // breaks up notes into arrays of arrays, each array containing bars on a single line
     const bars_per_line = this.config.bars_per_line
