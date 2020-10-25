@@ -45,6 +45,13 @@ class RngControls {
     const key = e.key
     // console.log(key)
     if( key in this.key_dict ) {
+      if( this.seed_input !== document.activeElement ) {
+        e.preventDefault()
+      } else if( key.match(/\d/) ) {
+        return
+      } else {
+        e.preventDefault()
+      }
       this.key_dict[key](e)
     }
   }
@@ -91,7 +98,14 @@ class RngControls {
         input.setAttribute("type","number")
         input.setAttribute("id","ui_seed")
         input.setAttribute("value",0)
-        input.addEventListener("change",(e) => this.rng.new_seed(e.target.value))
+        input.addEventListener("change",(e) => {
+          let x
+          try {
+            x = parseInt(e.target.value)
+          } catch(err) {
+            x = 0
+          }
+          this.rng.new_seed(x)})
         div.append(input)
         this.seed_input = input
       
@@ -120,7 +134,7 @@ class RngControls {
     this.signal_callbacks()
   }
   add(n) {
-    this.rng.new_seed(this.rng.seed+n)
+    this.rng.new_seed(this.rng.seed+parseInt(n))
   }
   daily() {
     const now = Date.now()
