@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Block chords 1</title>
+  <script src="abc.js"></script>
+  <script src="rand.js"></script>
+  <script src="rng.js"></script>
+  <script src="rng-ui.js"></script>
+  <script src="abc-gen.js"></script>  
+  <script src="chord.js"></script>
+  <script src="note.js"></script>
+  <script src="adjacent_chord_generator.js"></script>
+  <script src="block_chord_abc_generator.js"></script>
+  <link rel="stylesheet" href="rng-ui.css">
+  <script>
+let rng, ui, paper, generator
+
+window.addEventListener("load",() => {
+  rng = new Rng()
+  ui = new RngControls(rng,"ui")
+  paper = document.getElementById("paper")
+  generator = new BlockChordGenerator(rng,ui,paper)
+  ui.daily()
+  generator.generate()
+})
+</script>
+</head>
+<body>
+  <div id="ui"></div>
+  <div id="paper"></div>
+</body>
+</html>
