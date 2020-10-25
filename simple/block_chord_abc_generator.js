@@ -30,7 +30,7 @@ class BlockChordGenerator extends AbcGenerator {
     gen.reset() 
 
     const arr = gen.generate(this.config.number_of_bars) 
-    const use_sharps = ui.use_sharps
+    const use_sharps = this.ui.use_sharps
     const arr_abc = arr.map(chord => chord.notes_in_octave(this.config.octave))
       .map(midi_notes => midi_notes.map(midi_note => new Note(midi_note)))
       .map(notes => notes.map(note => note.to_abc_pitch(use_sharps)))
