@@ -1,10 +1,13 @@
-// root 5th octave 10th quaver 12/8 pattern (White clouds) 
-class Pattern1AbcGenerator extends AbcGenerator {
+// 1 3 2 3 with voice leading
+// generate three pitches in an octave,
+// pass the result to the abc generator
+// with voice leading
+class Pattern2AbcGenerator extends AbcGenerator {
   constructor(rng,ui,paper) {
     super(rng,ui,paper)
     const config = {
-      time_signature: "12/8",
-      default_note_duration: "1/8",
+      time_signature: "2/4",
+      default_note_duration: "1/16",
       clef: "bass",
       octave: 36,
       number_of_bars: 16,
@@ -53,7 +56,7 @@ class Pattern1AbcGenerator extends AbcGenerator {
     const max_root = min_root + 12
 
     // possible_roots_pitch_class is in the range [0,12)
-    const possible_roots_pitch_classes = offset_array_mod(admissible_roots,key,12)  
+    const possible_roots_pitch_classes = offset_array_mod(admissible_roots,key,12)
     // we want it in the range [min_root,min_root+12)
     const possible_roots = possible_roots_pitch_classes.map(
       pitch_class => {
@@ -76,7 +79,18 @@ class Pattern1AbcGenerator extends AbcGenerator {
       random_roots.push(new_root)
     }
     const random_root_indices = random_roots.map(x => all_notes.indexOf(x))
-    const bars_notes = random_root_indices.map(root_index => this.root_note_to_bar(root_index,all_notes))
+    const root_to_triad = root_index => {
+      const triad_base = [0,2,4]
+      const triad = triad_base.map(x => x + root_index)
+      const pitches = triad.map(x => all_notes[x])
+      for(let i=0; i<pitches.length; i++) {
+        while(pitches[i] < min_root) pitches[i] += 12
+        while(pitches[i] >= max_root) pitches[i] -= 12
+      }
+      return pitches
+    }
+    const bars_pitches = random_root_indices.map(root_to_triad)
+    const bars_notes = bars_pitches.map(pitches => this.notes_to_bar(pitches))
     const lines = []
     let line = []
     const header = `X:1
@@ -107,12 +121,14 @@ K: clef=${this.config.clef}`
     // console.log(abc)
     return abc
   }
-  root_note_to_bar(root_index,all_notes) {
-    const pattern = [0,4,7,9,7,4]
-    const pitches_indices = pattern.map(x => x + root_index)
-    const pitches = pitches_indices.map(x => all_notes[x])
-    const notes = pitches.map(midi_pitch => new Note(midi_pitch))
-    const abc_pitches = notes.map(note => note.to_abc_pitch(this.ui.use_sharps))
+  notes_to_bar(notes) {
+    // receives a list of midi pitches
+    const notes2 = notes
+    notes2.sort((x,y) => x-y)
+    const pattern = [0,2,1,2]
+    const pitches = pattern.map(x => notes[x])
+    const pattern_notes = pitches.map(midi_pitch => new Note(midi_pitch))
+    const abc_pitches = pattern_notes.map(note => note.to_abc_pitch(this.ui.use_sharps))
     // do each pattern twice, for a total of 12 notes, grouped in 6's
     const abc1 = abc_pitches.join("")
     const abc = `${abc1} ${abc1}`

@@ -6,6 +6,19 @@ class Pattern1aAbcGenerator extends Pattern1AbcGenerator {
     this.config.default_note_duration = "1"
     this.config.bars_per_line = 8,
     this.config.number_of_bars = 32
+    this.key_handler_config = [
+      { key: "1", clef: "bass", octave: 36 },
+      { key: "2", clef: "bass", octave: 40 },
+      { key: "3", clef: "bass", octave: 44 },
+      { key: "4", clef: "bass", octave: 48 },
+      { key: "5", clef: "treble", octave: 52 },
+      { key: "6", clef: "treble", octave: 56 },
+      { key: "7", clef: "treble", octave: 60 },
+      { key: "8", clef: "treble", octave: 64 },
+      { key: "9", clef: "treble", octave: 68 },
+      { key: "0", clef: "treble", octave: 72 }
+    ]
+
   }
   root_note_to_bar(root_index,all_notes) {
     const pattern = [0,4,7,9]
