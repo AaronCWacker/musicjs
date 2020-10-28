@@ -44,6 +44,9 @@ class RngControls {
   key_handler = (e) => {
     const key = e.key
     // console.log(key)
+    if( key.match(/[0-9]/) ) {
+      this.note_range_span.textContent = key
+    }
     if( key in this.key_dict ) {
       this.key_dict[key](e)
     }
@@ -107,6 +110,13 @@ class RngControls {
     
         text = document.createTextNode(")")
         div.append(text)
+
+        text = document.createTextNode(" Range: ")
+        div.append(text)
+        span = document.createElement("span")
+        this.note_range_span = span
+        div.append(span)
+
     target.append(div)
   }
   toggle_use_sharps() {

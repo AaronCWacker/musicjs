@@ -18,7 +18,7 @@ class Pattern2AbcGenerator extends AbcGenerator {
       { key: "1", clef: "bass", octave: 36 },
       { key: "2", clef: "bass", octave: 40 },
       { key: "3", clef: "bass", octave: 44 },
-      { key: "4", clef: "treble", octave: 48 },
+      { key: "4", clef: "bass", octave: 48 },
       { key: "5", clef: "treble", octave: 52 },
       { key: "6", clef: "treble", octave: 56 },
       { key: "7", clef: "treble", octave: 60 },

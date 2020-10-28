@@ -27,6 +27,9 @@ window.addEventListener("load",() => {
   paper = document.getElementById("paper")
   generator = new Pattern2aAbcGenerator(rng,ui,paper)
   ui.daily()
+  const default_note_range = "4"
+  ui.key_dict[default_note_range]()
+  ui.note_range_span.textContent=default_note_range
   generator.generate()
 })
 </script>
