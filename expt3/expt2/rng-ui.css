@@ -1,0 +1,22 @@
+div.seed_button {
+  display: inline-block;
+  padding: 0.5em;
+  margin: 0.5em;
+  border: 1px solid black;
+  cursor: pointer;
+}
+div.seed_minus {
+  background-color: #fcc;
+}
+div.seed_plus {
+  background-color: #cfc;
+}
+div.seed_daily {
+  background-color: #ccf;
+}
+div.seed_random {
+  background-color: #fcf;
+}
+div.seed_zero {
+  background-color: #ccc;
+}

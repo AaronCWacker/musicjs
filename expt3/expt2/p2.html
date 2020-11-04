@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pattern 2</title>
+  <script src="abc.js"></script>
+  <script src="rand.js"></script>
+  <script src="rng.js"></script>
+  <script src="rng-ui.js"></script>
+  <script src="abc-gen.js"></script>  
+  <script src="chord.js"></script>
+  <script src="note.js"></script>
+  <script src="pattern2_abc_generator.js"></script>
+  <link rel="stylesheet" href="rng-ui.css">
+  <script>
+let rng, ui, paper, generator
+
+window.addEventListener("load",() => {
+  rng = new Rng()
+  const base_seed_offset = 2*10**6
+  const seed_offset_multiplier = 31415*2
+  const seed_offset = 1
+  rng.config.seed_offset = base_seed_offset + seed_offset * seed_offset_multiplier
+  ui = new RngControls(rng,"ui")
+  paper = document.getElementById("paper")
+  generator = new Pattern2AbcGenerator(rng,ui,paper)
+  ui.daily()
+  const default_note_range = "3"
+  ui.key_dict[default_note_range]()
+  ui.note_range_span.textContent=default_note_range
+  generator.generate()
+})
+</script>
+</head>
+<body>
+  <div id="ui"></div>
+  <div id="paper"></div>
+</body>
+</html>
