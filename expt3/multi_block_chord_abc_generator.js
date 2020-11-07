@@ -1,4 +1,4 @@
-class BlockChordGenerator extends AbcGenerator {
+class MultiBlockChordGenerator extends AbcGenerator {
   constructor(rng,ui,paper) {
     super(rng,ui,paper)
     this.chord_generator = new AdjacentChordGenerator(rng)
@@ -6,13 +6,13 @@ class BlockChordGenerator extends AbcGenerator {
       clef: "treble",
       octave: 60,
       bars_per_line: 8,
-      number_of_bars: 32
+      number_of_bars_per_block: 16
     }
     this.config = config
     // console.log("const",config,this.config)
 
     this.note_ranges = [
-      { clef: "bass", octave: 36 },
+      { clef: "bass", octave: 36 }, // 0, 1, 2, 6, 7, 8
       { clef: "bass", octave: 40 },
       { clef: "bass", octave: 44 },
       { clef: "bass", octave: 48 },
@@ -61,23 +61,35 @@ class BlockChordGenerator extends AbcGenerator {
 
     gen.reset() 
 
-    const arr = gen.generate(this.config.number_of_bars) 
-    const use_sharps = this.ui.use_sharps
-    const arr_abc = arr.map(chord => chord.notes_in_octave(this.config.octave))
-      .map(midi_notes => midi_notes.map(midi_note => new Note(midi_note)))
-      .map(notes => notes.map(note => note.to_abc_pitch(use_sharps)))
+    const configs = [1, 2, 3, 6, 7, 8]
+    const arrs = configs.map(() => gen.generate(this.config.number_of_bars_per_block))
 
-    let abc = `M:4/4\nL:1/1\nK: clef=${this.config.clef}\n[| `
-    for(let i=0; i<arr_abc.length; i++) {
-      let ys = arr_abc[i]
-      abc += `[${ys.join("")}]`
-      if( i+1 < arr_abc.length ) {
-        abc += " | "
-        if( (i%break_every) == (break_every-1)) {
-          abc += "\n"
+    const use_sharps = this.ui.use_sharps
+    const arrs_abc = arrs.map((arr,i) => arr.map(chord => chord.notes_in_octave(this.note_ranges[configs[i]].octave))
+      .map(midi_notes => midi_notes.map(midi_note => new Note(midi_note)))
+      .map(notes => notes.map(note => note.to_abc_pitch(use_sharps))))
+
+    let abc = `M:4/4\nL:1/1\nK: clef=${this.note_ranges[configs[0]].clef}\n[| `
+    for(let j=0; j<arrs_abc.length; j++) {
+      if( j > 0 && (this.note_ranges[configs[j]].clef != this.note_ranges[configs[j-1]].clef) ) {
+        const new_clef = this.note_ranges[configs[j]].clef
+        abc += `K: clef=${new_clef}\n`
+      }
+      const arr_abc = arrs_abc[j]
+      for(let i=0; i<arr_abc.length; i++) {
+        let ys = arr_abc[i]
+        abc += `[${ys.join("")}]`
+        if( i+1 < arr_abc.length ) {
+          abc += " | "
+          if( (i%break_every) == (break_every-1)) {
+            abc += "\n"
+          }
+        } else {
+          abc += " |]"
+          if( j+1 < arrs_abc.length ) {
+            abc += "\n"
+          }
         }
-      } else {
-        abc += " |]"
       }
     }
     return abc

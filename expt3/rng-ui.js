@@ -66,7 +66,7 @@ class RngControls {
       let div
       div = document.createElement("div")
       div.setAttribute("id",id)
-      div.classList.add('seed_button')
+      div.classList.add('ui_button')
       classes.forEach(cls => div.classList.add(cls))
       div.addEventListener("click",(e) => { e.preventDefault(); cb(e); })
       div.textContent = content
@@ -118,6 +118,20 @@ class RngControls {
         div.append(span)
 
     target.append(div)
+  }
+  append_button(id, content, classname, callback) {
+    const target = this.target
+    const crdiv = (id,content,classes=[],cb) => {
+      let div
+      div = document.createElement("div")
+      div.setAttribute("id",id)
+      div.classList.add('ui_button')
+      classes.forEach(cls => div.classList.add(cls))
+      div.addEventListener("click",(e) => { e.preventDefault(); cb(e); })
+      div.textContent = content
+      target.append(div)
+    }
+    crdiv(id,content,[classname], callback)
   }
   toggle_use_sharps() {
     this.use_sharps = !this.use_sharps
