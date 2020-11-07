@@ -3,27 +3,29 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Random chord sequence v2</title>
+  <title>Block chords 1</title>
   <script src="abc.js"></script>
   <script src="rand.js"></script>
   <script src="rng.js"></script>
   <script src="rng-ui.js"></script>
-  <script src="abc-gen.js"></script>
-  <script src="cs001.js"></script>
+  <script src="abc-gen.js"></script>  
+  <script src="chord.js"></script>
+  <script src="note.js"></script>
+  <script src="adjacent_chord_generator.js"></script>
+  <script src="block_chord_abc_generator.js"></script>
   <link rel="stylesheet" href="rng-ui.css">
   <script>
-// all that is needed is an instance of a subclass of AbcGenerator
-// and the following code
 let rng, ui, paper, generator
 
 window.addEventListener("load",() => {
   rng = new Rng()
   ui = new RngControls(rng,"ui")
   paper = document.getElementById("paper")
-  generator = new MyGenerator(rng,ui,paper) // generator adds its generate() callback -- later
+  generator = new BlockChordGenerator(rng,ui,paper)
   ui.daily()
+  generator.generate()
 })
-  </script>
+</script>
 </head>
 <body>
   <div id="ui"></div>
