@@ -22,7 +22,7 @@ foreach($g as $a) {
     }
   }
   fclose($handle);
-  echo "<li><a href='$a'>".($title?"$a - $title":$a)."</a></li>\n";
+  echo "<li><a href='$a'>$a</a>".($title?" - $title":"")."</li>\n";
 }
 ?>
 </ul>
