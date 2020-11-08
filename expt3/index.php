@@ -13,7 +13,16 @@
 <?php
 $g = glob("*.html");
 foreach($g as $a) {
-  echo "<li><a href='$a'>$a</a></li>\n";
+  $handle = fopen($a,"r");
+  $title = null;
+  while(($line = fgets($handle)) !== false) {
+    if(preg_match("@<title>(.*)</title>@",$line,$m)) {
+      $title = $m[1];
+      break;
+    }
+  }
+  fclose($handle);
+  echo "<li><a href='$a'>".($title?"$a - $title":$a)."</a></li>\n";
 }
 ?>
 </ul>
