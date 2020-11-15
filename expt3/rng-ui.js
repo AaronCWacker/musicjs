@@ -149,7 +149,9 @@ class RngControls {
   daily() {
     const now = Date.now()
     const epoch = Date.parse('1 Jan 2020')
-    const days = Math.floor((now - epoch)/(1000*24*3600))
+    const days = Math.floor((now - epoch)/(1000*24*3600)) 
+    const use_sharps = (days % 2) ? true : false;
+    this.use_sharps = use_sharps;
     this.rng.new_seed(days*100); 
   }
   random() {
